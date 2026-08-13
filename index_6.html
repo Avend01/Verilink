@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verilink — Official free & trial downloads, verified</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- ============================================================
+     GOOGLE ADSENSE — uncomment once your site is approved and you
+     have your publisher ID from https://www.google.com/adsense
+     ============================================================
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+-->
+
+<!-- ============================================================
+     FIREBASE AUTH — replace the config below with your own project's
+     config from https://console.firebase.google.com
+     (Project settings → General → Your apps → SDK setup and config)
+     Also enable "Email/Password" and "Google" under
+     Authentication → Sign-in method in the Firebase console.
+     ============================================================ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut,
+    updateProfile
+  } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+  // TODO: paste your own Firebase project config here
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT",
+    appId: "YOUR_APP_ID",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  window.__auth = auth;
+  window.__googleProvider = new GoogleAuthProvider();
+  window.__fb = { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile };
+
+  onAuthStateChanged(auth, (user) => {
+    window.dispatchEvent(new CustomEvent("verilink-auth-changed", { detail: { user } }));
+  });
+</script>
+<style>
+  :root{
+    --bg: #0A0E12;
+    --surface: #10161C;
+    --surface-2: #141B22;
+    --border: #202A33;
+    --text: #E7EDF2;
+    --muted: #7C8B99;
+    --muted-2: #56636E;
+    --accent: #34D399;
+    --accent-dim: #1F5F49;
+    --accent2: #38BDF8;
+    --danger: #F87171;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', 'Tajawal', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+  /* ambient animated background — two soft glows drifting slowly, fixed so they never affect page height */
+  .bg-glow{
+    position: fixed;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.55;
+    will-change: transform;
+  }
+  .bg-glow.g1{
+    width: 620px; height: 620px;
+    top: -220px; left: -120px;
+    background: radial-gradient(circle, rgba(56,189,248,0.16), transparent 70%);
+    animation: drift1 26s ease-in-out infinite;
+  }
+  .bg-glow.g2{
+    width: 560px; height: 560px;
+    bottom: -200px; right: -140px;
+    background: radial-gradient(circle, rgba(52,211,153,0.14), transparent 70%);
+    animation: drift2 32s ease-in-out infinite;
+  }
+  .bg-glow.g3{
+    width: 380px; height: 380px;
+    top: 40%; left: 60%;
+    background: radial-gradient(circle, rgba(167,139,250,0.10), transparent 70%);
+    animation: drift3 22s ease-in-out infinite;
+  }
+  @keyframes drift1{
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(80px, 60px) scale(1.08); }
+  }
+  @keyframes drift2{
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-70px, -50px) scale(1.05); }
+  }
+  @keyframes drift3{
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    50% { transform: translate(-50%, -50%) translate(40px, -40px) scale(1.15); opacity: 0.8; }
+  }
+  .topbar, .hero, .ad-banner, .controls, .grid-wrap, section, footer, .modal-overlay{
+    position: relative;
+    z-index: 1;
+  }
+  @media (prefers-reduced-motion: reduce){
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  a { color: inherit; }
+  .mono { font-family: 'JetBrains Mono', 'Tajawal', monospace; }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position: sticky; top:0; z-index: 60;
+    background: rgba(10,14,18,0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner{
+    max-width: 1160px; margin: 0 auto;
+    padding: 16px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 20px;
+  }
+  .logo{
+    font-family: 'Space Grotesk', 'Tajawal', sans-serif;
+    font-weight: 700; font-size: 18px;
+    letter-spacing: 0.2px;
+    display:flex; align-items:center; gap:9px;
+  }
+  .logo .dot{
+    width:8px; height:8px; border-radius:50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+  .topbar nav{ display:flex; gap:26px; font-size:14px; color:var(--muted); }
+  .topbar nav a{ text-decoration:none; transition: color .15s; }
+  .topbar nav a:hover{ color: var(--text); }
+  .topbar-actions{ display:flex; gap:10px; align-items:center; }
+
+  .btn{
+    font-family: 'Inter', 'Tajawal', sans-serif;
+    font-weight: 600; font-size: 14.5px;
+    padding: 12px 20px; border-radius: 9px;
+    border: 1px solid transparent;
+    cursor: pointer; text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    transition: transform .12s ease, border-color .15s, background .15s;
+  }
+  .btn-primary{ background: var(--accent); color: #06251A; }
+  .btn-primary:hover{ transform: translateY(-1px); }
+  .btn-ghost{ background: transparent; border-color: var(--border); color: var(--text); }
+  .btn-ghost:hover{ border-color: var(--muted-2); }
+  .btn-sm{ padding: 8px 14px; font-size: 13.5px; border-radius: 7px; }
+
+  /* ---------- language switcher ---------- */
+  .lang-switch{ position: relative; }
+  .lang-btn{
+    display:flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono','Tajawal',monospace;
+    font-size: 12.5px; font-weight: 500;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  .lang-btn:hover{ border-color: var(--muted-2); }
+  .lang-btn svg{ opacity: 0.6; transition: transform .15s; }
+  .lang-btn.open svg{ transform: rotate(180deg); }
+  .lang-menu{
+    position: absolute; top: calc(100% + 8px); right: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-width: 150px;
+    padding: 6px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    box-shadow: 0 14px 30px -12px rgba(0,0,0,0.5);
+    z-index: 70;
+  }
+  html[dir="rtl"] .lang-menu{ right: auto; left: 0; }
+  .lang-menu.open{ display: flex; }
+  .lang-option{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 9px 10px; border-radius: 7px;
+    font-size: 13.5px; font-family:'Inter','Tajawal',sans-serif;
+    color: var(--muted); cursor: pointer; border: none; background: none; text-align: left;
+  }
+  html[dir="rtl"] .lang-option{ text-align: right; }
+  .lang-option:hover{ background: var(--surface-2); color: var(--text); }
+  .lang-option.active{ color: var(--accent); }
+  .lang-option .code{ font-family:'JetBrains Mono',monospace; font-size: 11px; color: var(--muted-2); }
+
+  /* ---------- hero ---------- */
+  .hero{
+    max-width: 1160px; margin: 0 auto;
+    padding: 64px 24px 48px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 56px;
+    align-items: center;
+  }
+  @media (max-width: 880px){ .hero{ grid-template-columns: 1fr; padding-top: 40px; gap: 32px; } }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', 'Tajawal', monospace;
+    font-size: 12px; color: var(--accent);
+    background: rgba(52,211,153,0.08);
+    border: 1px solid var(--accent-dim);
+    padding: 5px 10px; border-radius: 100px;
+    margin-bottom: 22px;
+  }
+  h1{
+    font-family: 'Space Grotesk', 'Tajawal', sans-serif;
+    font-size: clamp(32px, 4.6vw, 50px);
+    line-height: 1.08;
+    font-weight: 700;
+    margin: 0 0 20px;
+    letter-spacing: -0.5px;
+  }
+  html[dir="rtl"] h1{ letter-spacing: 0; }
+  h1 span{ color: var(--accent); }
+  .hero p.sub{
+    color: var(--muted);
+    font-size: 16.5px;
+    line-height: 1.65;
+    max-width: 480px;
+    margin: 0 0 28px;
+  }
+  .hero-actions{ display:flex; gap:12px; flex-wrap:wrap; }
+
+  /* terminal signature element — FIXED size, never grows the page */
+  .terminal{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px -20px rgba(0,0,0,0.6);
+    height: 250px;
+    display:flex; flex-direction:column;
+    direction: ltr;
+    text-align: left;
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:7px;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    flex-shrink:0;
+  }
+  .terminal-bar span{ width:10px; height:10px; border-radius:50%; background:#2A353F; }
+  .terminal-bar .label{
+    margin-left: 8px; font-family:'JetBrains Mono',monospace;
+    font-size: 12px; color: var(--muted-2);
+  }
+  .terminal-body{
+    padding: 18px 18px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.9;
+    flex: 1;
+    overflow: hidden;              /* content never pushes layout */
+    display:flex; flex-direction:column; justify-content:flex-start;
+  }
+  .terminal-body .prompt{ color: var(--accent2); }
+  .line-reject{ color: var(--danger); }
+  .line-ok{ color: var(--accent); }
+  .blinker{
+    display:inline-block; width:7px; height:14px; background: var(--accent2);
+    vertical-align: -2px; animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- ad slots ---------- */
+  .ad-slot{
+    border: 1px dashed var(--border);
+    background: repeating-linear-gradient(135deg, rgba(255,255,255,0.015) 0 10px, transparent 10px 20px);
+    border-radius: 10px;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--muted-2);
+    font-family:'JetBrains Mono','Tajawal',monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.5px;
+  }
+  .ad-banner{
+    max-width: 1160px; margin: 0 auto; padding: 0 24px 40px;
+  }
+  .ad-banner .ad-slot{ height: 90px; }
+  .ad-card.ad-slot{
+    min-height: 220px;
+    grid-column: span 1;
+  }
+
+  /* ---------- controls ---------- */
+  .controls{
+    max-width: 1160px; margin: 0 auto; padding: 0 24px 8px;
+  }
+  .controls-row{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+    padding: 18px 0 22px;
+    border-top: 1px solid var(--border);
+  }
+  .search{
+    flex: 1 1 240px;
+    display:flex; align-items:center; gap:10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 14px;
+  }
+  .search input{
+    background: transparent; border: none; outline: none;
+    color: var(--text); font-family:'Inter','Tajawal',sans-serif; font-size: 14px;
+    width: 100%;
+  }
+  .search input::placeholder{ color: var(--muted-2); }
+  .search svg{ flex-shrink:0; opacity:0.6; }
+
+  .chip{
+    font-family:'JetBrains Mono', 'Tajawal', monospace;
+    font-size: 12.5px;
+    padding: 9px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .15s;
+  }
+  .chip:hover{ border-color: var(--muted-2); color: var(--text); }
+  .chip.active{ background: rgba(52,211,153,0.1); border-color: var(--accent-dim); color: var(--accent); }
+
+  /* ---------- grid ---------- */
+  .grid-wrap{ max-width: 1160px; margin: 0 auto; padding: 8px 24px 30px; }
+  .count-line{
+    font-family:'JetBrains Mono','Tajawal',monospace; font-size: 12.5px;
+    color: var(--muted-2); margin: 0 0 18px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+    gap: 16px;
+  }
+  .card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display:flex; flex-direction:column; gap: 12px;
+    transition: border-color .15s, transform .15s;
+  }
+  .card:hover{ border-color: var(--muted-2); transform: translateY(-2px); }
+  .card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+  .app-icon{
+    width: 44px; height: 44px; border-radius: 10px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size: 16px;
+    color: #071012;
+    flex-shrink:0;
+    overflow: hidden;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+  .app-icon img{ width:100%; height:100%; object-fit: cover; display:block; }
+  .app-icon.fallback{ color:#071012; }
+  .cat-tag{
+    font-family:'JetBrains Mono','Tajawal',monospace; font-size: 11px;
+    color: var(--muted); border:1px solid var(--border);
+    padding: 4px 9px; border-radius: 100px; white-space:nowrap;
+  }
+  .app-name{ font-family:'Space Grotesk','Tajawal',sans-serif; font-weight:600; font-size: 16.5px; margin:0; direction: ltr; text-align: left; }
+  html[dir="rtl"] .app-name{ text-align: right; }
+  .app-tier{ font-size: 12.5px; color: var(--accent2); font-family:'JetBrains Mono','Tajawal',monospace; }
+  .app-desc{ font-size: 13.5px; color: var(--muted); line-height:1.55; margin:0; flex:1; }
+
+  .verify-row{
+    display:flex; align-items:center; gap:7px;
+    font-family:'JetBrains Mono',monospace; font-size: 11.5px;
+    color: var(--muted-2);
+    padding-top: 10px; border-top: 1px dashed var(--border);
+    direction: ltr;
+  }
+  html[dir="rtl"] .verify-row{ justify-content: flex-end; }
+  .verify-row .vdot{ width:6px; height:6px; border-radius:50%; background: var(--accent); flex-shrink:0; }
+  .verify-row .domain{ color: var(--muted); }
+
+  .get-btn{
+    margin-top: 4px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-weight: 600; font-size: 13.5px;
+    padding: 10px; border-radius: 8px;
+    text-decoration:none;
+    transition: all .15s;
+  }
+  .get-btn:hover{ background: var(--accent); color: #06251A; border-color: var(--accent); }
+
+  .empty{
+    text-align:center; padding: 60px 20px; color: var(--muted-2);
+    font-family:'JetBrains Mono','Tajawal',monospace; font-size: 13px;
+  }
+
+  /* ---------- support / contact section ---------- */
+  .support{
+    max-width: 1160px; margin: 0 auto; padding: 20px 24px 70px;
+  }
+  .support-card{
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 30px;
+    display:grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 30px;
+  }
+  @media (max-width: 760px){ .support-card{ grid-template-columns: 1fr; } }
+  .support h2{ font-family:'Space Grotesk','Tajawal',sans-serif; font-size: 21px; margin: 0 0 10px; }
+  .support p{ color: var(--muted); font-size: 13.5px; line-height: 1.7; margin: 0 0 8px; }
+  .support-contact{
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    font-family:'JetBrains Mono',monospace;
+    font-size: 13px;
+    direction: ltr;
+    text-align: left;
+  }
+  .support-contact .k{ color: var(--muted-2); }
+  .support-contact .v{ color: var(--accent2); }
+  .support-note{
+    margin-top: 12px; font-size: 12px; color: var(--muted-2);
+  }
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 30px 24px 40px;
+  }
+  .footer-inner{
+    max-width: 1160px; margin: 0 auto;
+    display:flex; justify-content:space-between; gap: 24px; flex-wrap:wrap;
+  }
+  .footer-note{
+    font-size: 12.5px; color: var(--muted-2); line-height: 1.7; max-width: 560px;
+  }
+  .footer-note strong{ color: var(--muted); }
+
+  /* ---------- auth modal ---------- */
+  .modal-overlay{
+    position: fixed; inset:0; z-index: 100;
+    background: rgba(6,9,12,0.72);
+    backdrop-filter: blur(3px);
+    display:none; align-items:center; justify-content:center;
+    padding: 20px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal{
+    width: 100%; max-width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px;
+  }
+  .modal-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px; }
+  .modal-title{ font-family:'Space Grotesk','Tajawal',sans-serif; font-weight:600; font-size: 18px; }
+  .modal-close{ background:none; border:none; color: var(--muted); cursor:pointer; font-size: 18px; line-height:1; }
+  .tabs{ display:flex; gap:6px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 9px; padding: 4px; margin-bottom: 18px; }
+  .tab-btn{
+    flex:1; text-align:center; padding: 8px 0; border-radius: 6px;
+    font-size: 13.5px; font-weight: 600; color: var(--muted); cursor:pointer; border:none; background:none;
+    font-family: 'Inter', 'Tajawal', sans-serif;
+  }
+  .tab-btn.active{ background: var(--surface); color: var(--text); }
+  .field{ margin-bottom: 14px; }
+  .field label{ display:block; font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+  .field input{
+    width:100%; background: var(--surface-2); border:1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; color: var(--text); font-family:'Inter','Tajawal',sans-serif; font-size: 14px; outline:none;
+  }
+  .field input:focus{ border-color: var(--muted-2); }
+  .modal .btn-primary{ width:100%; justify-content:center; margin-top: 4px; }
+  .modal-foot{ margin-top: 14px; font-size: 12px; color: var(--muted-2); text-align:center; }
+  .google-btn{ width:100%; justify-content:center; background: var(--surface-2); }
+  .divider{
+    display:flex; align-items:center; gap: 10px;
+    margin: 16px 0; color: var(--muted-2); font-size: 12px;
+  }
+  .divider::before, .divider::after{
+    content: ""; flex:1; height:1px; background: var(--border);
+  }
+
+  .toast{
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(0);
+    background: var(--surface); border: 1px solid var(--accent-dim);
+    color: var(--text); padding: 12px 18px; border-radius: 9px;
+    font-size: 13.5px; z-index: 200; opacity:0; pointer-events:none;
+    transition: opacity .2s, transform .2s;
+  }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(-8px); }
+</style>
+</head>
+<body>
+
+  <div class="bg-glow g1"></div>
+  <div class="bg-glow g2"></div>
+  <div class="bg-glow g3"></div>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="logo"><span class="dot"></span>verilink</div>
+      <nav>
+        <a href="#directory" data-i18n="nav_directory">Directory</a>
+        <a href="#how" data-i18n="nav_how">How it works</a>
+        <a href="#support" data-i18n="nav_support">Support</a>
+      </nav>
+      <div class="topbar-actions">
+        <div class="lang-switch">
+          <button class="lang-btn" id="langBtn" onclick="toggleLangMenu()">
+            <span id="langBtnLabel">EN</span>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 3.5 L5 6.5 L8 3.5"/></svg>
+          </button>
+          <div class="lang-menu" id="langMenu">
+            <button class="lang-option" data-lang="en" onclick="setLang('en')">English <span class="code">EN</span></button>
+            <button class="lang-option" data-lang="fr" onclick="setLang('fr')">Français <span class="code">FR</span></button>
+            <button class="lang-option" data-lang="ar" onclick="setLang('ar')">العربية <span class="code">AR</span></button>
+          </div>
+        </div>
+        <span id="authedBar" style="display:none; align-items:center; gap:10px;">
+          <span id="authedEmail" class="mono" style="font-size:12.5px; color:var(--muted);"></span>
+          <button class="btn btn-ghost btn-sm" onclick="doSignOut()" data-i18n="btn_logout">Log out</button>
+        </span>
+        <span id="guestBar" style="display:flex; align-items:center; gap:10px;">
+          <button class="btn btn-ghost btn-sm" onclick="openAuth('login')" data-i18n="btn_login">Log in</button>
+          <button class="btn btn-primary btn-sm" onclick="openAuth('signup')" data-i18n="btn_signup">Sign up</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow" data-i18n="hero_eyebrow">◆ 100% links to official vendor sites</div>
+      <h1 data-i18n-html="hero_h1">Get the <span>real</span> free version.<br>No mirrors. No installers stuffed with malware.</h1>
+      <p class="sub" data-i18n="hero_sub">Verilink is an index of legitimate free tiers and trials — Premiere Pro, CapCut, DaVinci Resolve, free-to-play games and more. Every button below sends you straight to the app's own website to download.</p>
+      <div class="hero-actions">
+        <a href="#directory" class="btn btn-primary" data-i18n="btn_browse">Browse the directory ↓</a>
+        <a href="#how" class="btn btn-ghost" data-i18n="btn_why">Why this exists</a>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span></span><span></span><span></span>
+        <span class="label">verify.sh</span>
+      </div>
+      <div class="terminal-body" id="termBody">
+        <div><span class="prompt">$</span> checking source…</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ad-banner">
+    <div class="ad-slot" data-i18n="ad_header">AD SPACE · 728×90 LEADERBOARD · slot id: ad-header</div>
+    <!-- Once AdSense-approved, replace the div above with:
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="YOUR_SLOT_ID" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    -->
+  </div>
+
+  <div class="controls" id="directory">
+    <div class="controls-row">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="searchInput" type="text" data-i18n-placeholder="search_placeholder" placeholder="Search apps — Premiere, CapCut, Figma, Valorant…">
+      </div>
+    </div>
+    <div class="controls-row" id="chipRow"></div>
+  </div>
+
+  <div class="grid-wrap">
+    <p class="count-line" id="countLine"></p>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="emptyState" style="display:none;" data-i18n="empty_state">No matches. Try another search or category.</div>
+  </div>
+
+  <section id="how" style="max-width:1160px;margin:0 auto;padding:10px 24px 60px;">
+    <h2 style="font-family:'Space Grotesk','Tajawal',sans-serif;font-size:22px;margin-bottom:10px;" data-i18n="how_title">Why this exists</h2>
+    <p style="color:var(--muted);font-size:14.5px;line-height:1.7;max-width:680px;" data-i18n="how_body">
+      Searching "free Premiere Pro download" usually surfaces cracked-software sites bundling adware or worse, long before the real Adobe trial page. Verilink skips the search results — every card here links to the app's own official domain, shown in the verify line, so you know exactly where the button takes you before you click it.
+    </p>
+  </section>
+
+  <section id="support" class="support">
+    <div class="support-card">
+      <div>
+        <h2 data-i18n="support_title">Support &amp; contact</h2>
+        <p data-i18n="support_p1">Questions about a listing, a broken link, or something else? Reach out and we'll get back to you.</p>
+        <p data-i18n="support_p2">An uploader rewards program (paid per 1,000 downloads, with a public payment-proof log) is planned for a future version of this site — this section is a placeholder for that support line once it launches.</p>
+      </div>
+      <div>
+        <div class="support-contact">
+          <div style="margin-bottom:10px;"><span class="k" data-i18n="support_email_label">support:</span> <span class="v">support@verilink.example</span></div>
+          <div><span class="k" data-i18n="support_response_label">response time:</span> <span style="color:var(--muted);" data-i18n="support_not_active">— not yet active —</span></div>
+        </div>
+        <div class="support-note" data-i18n="support_note">Placeholder address — swap this for your real support inbox before launch.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ad-banner" style="padding-bottom:50px;">
+    <div class="ad-slot" data-i18n="ad_footer">AD SPACE · 728×90 LEADERBOARD · slot id: ad-footer</div>
+    <!-- Same swap as the header slot, with a different data-ad-slot ID from your AdSense dashboard. -->
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="logo" style="font-size:15px;"><span class="dot"></span>verilink</div>
+      <p class="footer-note" data-i18n-html="footer_note">
+        <strong>Verilink hosts no software.</strong> It's a directory of outbound links to each vendor's official site. Free tiers, trials, and free-to-play terms are set by the vendors and can change — always confirm current terms on their page.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Auth modal (front-end only, no backend wired up yet) -->
+  <div class="modal-overlay" id="authOverlay" onclick="if(event.target===this) closeAuth()">
+    <div class="modal">
+      <div class="modal-top">
+        <span class="modal-title" id="modalTitle" data-i18n="modal_login">Log in</span>
+        <button class="modal-close" onclick="closeAuth()">✕</button>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')" data-i18n="btn_login">Log in</button>
+        <button class="tab-btn" id="tabSignup" onclick="switchTab('signup')" data-i18n="btn_signup">Sign up</button>
+      </div>
+
+      <button class="btn btn-ghost google-btn" onclick="submitGoogle()">
+        <svg width="17" height="17" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.87 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.95v2.33A9 9 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 0 1 3.67 9c0-.59.1-1.17.28-1.7V4.97H.95A9 9 0 0 0 0 9c0 1.45.35 2.83.95 4.03l3-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.51.46 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .95 4.97l3 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
+        <span data-i18n="google_btn">Continue with Google</span>
+      </button>
+
+      <div class="divider"><span data-i18n="divider_or">or</span></div>
+
+      <div id="signupNameField" class="field" style="display:none;">
+        <label data-i18n="field_name">Name</label>
+        <input type="text" id="authName" data-i18n-placeholder="field_name_ph" placeholder="Your name">
+      </div>
+      <div class="field">
+        <label data-i18n="field_email">Email</label>
+        <input type="email" id="authEmail" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label data-i18n="field_password">Password</label>
+        <input type="password" id="authPassword" placeholder="••••••••">
+      </div>
+      <div id="authError" style="display:none; color:var(--danger); font-size:12.5px; margin:-6px 0 14px;"></div>
+      <button class="btn btn-primary" onclick="submitAuth()" id="authSubmitBtn" data-i18n="btn_continue">Continue</button>
+      <div class="modal-foot" id="modalFoot" data-i18n="modal_foot">Powered by Firebase Authentication.</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================================
+   TRANSLATIONS — UI chrome
+   ========================================================================= */
+const translations = {
+  en: {
+    nav_directory: "Directory",
+    nav_how: "How it works",
+    nav_support: "Support",
+    btn_login: "Log in",
+    btn_signup: "Sign up",
+    btn_logout: "Log out",
+    toast_auth_success: "You're signed in.",
+    hero_eyebrow: "◆ 100% links to official vendor sites",
+    hero_h1: `Get the <span>real</span> free version.<br>No mirrors. No installers stuffed with malware.`,
+    hero_sub: "Verilink is an index of legitimate free tiers and trials — Premiere Pro, CapCut, DaVinci Resolve, free-to-play games and more. Every button below sends you straight to the app's own website to download.",
+    btn_browse: "Browse the directory ↓",
+    btn_why: "Why this exists",
+    ad_header: "AD SPACE · 728×90 LEADERBOARD · slot id: ad-header",
+    ad_footer: "AD SPACE · 728×90 LEADERBOARD · slot id: ad-footer",
+    ad_grid: "AD SPACE · IN-GRID · slot id:",
+    search_placeholder: "Search apps — Premiere, CapCut, Figma, Valorant…",
+    empty_state: "No matches. Try another search or category.",
+    how_title: "Why this exists",
+    how_body: `Searching "free Premiere Pro download" usually surfaces cracked-software sites bundling adware or worse, long before the real Adobe trial page. Verilink skips the search results — every card here links to the app's own official domain, shown in the verify line, so you know exactly where the button takes you before you click it.`,
+    support_title: "Support &amp; contact",
+    support_p1: "Questions about a listing, a broken link, or something else? Reach out and we'll get back to you.",
+    support_p2: "An uploader rewards program (paid per 1,000 downloads, with a public payment-proof log) is planned for a future version of this site — this section is a placeholder for that support line once it launches.",
+    support_email_label: "support:",
+    support_response_label: "response time:",
+    support_not_active: "— not yet active —",
+    support_note: "Placeholder address — swap this for your real support inbox before launch.",
+    footer_note: `<strong>Verilink hosts no software.</strong> It's a directory of outbound links to each vendor's official site. Free tiers, trials, and free-to-play terms are set by the vendors and can change — always confirm current terms on their page.`,
+    modal_login: "Log in",
+    modal_signup: "Sign up",
+    google_btn: "Continue with Google",
+    divider_or: "or",
+    field_name: "Name",
+    field_name_ph: "Your name",
+    field_email: "Email",
+    field_password: "Password",
+    btn_continue: "Continue",
+    modal_foot: "Secured by Firebase Authentication.",
+    verified_label: "official source verified",
+    get_btn: "Go to official site ↗",
+    count_line: (n) => `${n} app${n === 1 ? "" : "s"} · linking directly to official sources`,
+  },
+  fr: {
+    nav_directory: "Répertoire",
+    nav_how: "Comment ça marche",
+    nav_support: "Assistance",
+    btn_login: "Connexion",
+    btn_signup: "S'inscrire",
+    btn_logout: "Déconnexion",
+    toast_auth_success: "Vous êtes connecté(e).",
+    hero_eyebrow: "◆ 100 % de liens vers les sites officiels",
+    hero_h1: `Téléchargez la <span>vraie</span> version gratuite.<br>Pas de miroirs. Pas d'installateurs truffés de malwares.`,
+    hero_sub: "Verilink est un répertoire d'offres gratuites et d'essais légitimes — Premiere Pro, CapCut, DaVinci Resolve, jeux gratuits et plus encore. Chaque bouton ci-dessous vous mène directement au site officiel pour télécharger.",
+    btn_browse: "Parcourir le répertoire ↓",
+    btn_why: "Pourquoi ce site existe",
+    ad_header: "ESPACE PUB · 728×90 · emplacement : ad-header",
+    ad_footer: "ESPACE PUB · 728×90 · emplacement : ad-footer",
+    ad_grid: "ESPACE PUB · DANS LA GRILLE · emplacement :",
+    search_placeholder: "Rechercher une application — Premiere, CapCut, Figma, Valorant…",
+    empty_state: "Aucun résultat. Essayez une autre recherche ou catégorie.",
+    how_title: "Pourquoi ce site existe",
+    how_body: `Rechercher « télécharger Premiere Pro gratuit » fait souvent remonter des sites de logiciels piratés truffés d'adwares, bien avant la vraie page d'essai Adobe. Verilink évite les résultats de recherche — chaque fiche ici pointe vers le domaine officiel de l'application, indiqué sur la ligne de vérification, pour que vous sachiez exactement où mène le bouton avant de cliquer.`,
+    support_title: "Assistance et contact",
+    support_p1: "Une question sur une fiche, un lien cassé, ou autre chose ? Contactez-nous, nous vous répondrons.",
+    support_p2: "Un programme de récompenses pour les contributeurs (rémunéré par tranche de 1 000 téléchargements, avec un registre public des paiements) est prévu pour une future version du site — cette section est un espace réservé en attendant son lancement.",
+    support_email_label: "assistance :",
+    support_response_label: "délai de réponse :",
+    support_not_active: "— pas encore actif —",
+    support_note: "Adresse provisoire — à remplacer par votre véritable boîte d'assistance avant le lancement.",
+    footer_note: `<strong>Verilink n'héberge aucun logiciel.</strong> C'est un répertoire de liens sortants vers le site officiel de chaque éditeur. Les offres gratuites, essais et conditions free-to-play sont définis par les éditeurs et peuvent changer — vérifiez toujours les conditions actuelles sur leur page.`,
+    modal_login: "Connexion",
+    modal_signup: "S'inscrire",
+    google_btn: "Continuer avec Google",
+    divider_or: "ou",
+    field_name: "Nom",
+    field_name_ph: "Votre nom",
+    field_email: "E-mail",
+    field_password: "Mot de passe",
+    btn_continue: "Continuer",
+    modal_foot: "Sécurisé par Firebase Authentication.",
+    verified_label: "source officielle vérifiée",
+    get_btn: "Aller au site officiel ↗",
+    count_line: (n) => `${n} application${n === 1 ? "" : "s"} · lien direct vers les sources officielles`,
+  },
+  ar: {
+    nav_directory: "الدليل",
+    nav_how: "كيف يعمل الموقع",
+    nav_support: "الدعم",
+    btn_login: "تسجيل الدخول",
+    btn_signup: "إنشاء حساب",
+    btn_logout: "تسجيل الخروج",
+    toast_auth_success: "تم تسجيل الدخول.",
+    hero_eyebrow: "◆ ١٠٠٪ من الروابط تؤدي إلى المواقع الرسمية",
+    hero_h1: `احصل على النسخة <span>المجانية الحقيقية</span>.<br>بدون مواقع بديلة، وبدون برامج تثبيت محمّلة ببرمجيات خبيثة.`,
+    hero_sub: "فيريلينك هو دليل للنسخ المجانية والتجريبية الرسمية — Premiere Pro وCapCut وDaVinci Resolve وألعاب مجانية وغيرها. كل زر أدناه يأخذك مباشرة إلى الموقع الرسمي للتطبيق للتحميل.",
+    btn_browse: "تصفح الدليل ↓",
+    btn_why: "لماذا أنشأنا هذا الموقع",
+    ad_header: "مساحة إعلانية · ٧٢٨×٩٠ · المعرّف: ad-header",
+    ad_footer: "مساحة إعلانية · ٧٢٨×٩٠ · المعرّف: ad-footer",
+    ad_grid: "مساحة إعلانية · داخل الشبكة · المعرّف:",
+    search_placeholder: "ابحث عن تطبيق — Premiere، CapCut، Figma، Valorant…",
+    empty_state: "لا توجد نتائج مطابقة. جرّب بحثًا أو تصنيفًا آخر.",
+    how_title: "لماذا أنشأنا هذا الموقع",
+    how_body: `البحث عن "تحميل Premiere Pro مجانًا" غالبًا ما يُظهر مواقع تحتوي على برامج مقرصنة ومحمّلة ببرمجيات إعلانية أو أسوأ، قبل الوصول إلى صفحة أدوبي الرسمية للتجربة. فيريلينك يتجاوز نتائج البحث — كل بطاقة هنا ترتبط بالنطاق الرسمي للتطبيق، الموضح في سطر التحقق، لتعرف بالضبط إلى أين يقودك الزر قبل أن تضغط عليه.`,
+    support_title: "الدعم والتواصل",
+    support_p1: "لديك سؤال حول أحد التطبيقات، أو رابط لا يعمل، أو أي شيء آخر؟ تواصل معنا وسنرد عليك.",
+    support_p2: "من المخطط إطلاق برنامج مكافآت للمساهمين (أجر مقابل كل ١٠٠٠ تحميل، مع سجل عام لإثباتات الدفع) في نسخة مستقبلية من الموقع — هذا القسم هو مكان مؤقت لهذه الخدمة إلى حين إطلاقها.",
+    support_email_label: "الدعم:",
+    support_response_label: "زمن الرد:",
+    support_not_active: "— غير مُفعّل بعد —",
+    support_note: "عنوان مؤقت — استبدله ببريد الدعم الحقيقي الخاص بك قبل الإطلاق.",
+    footer_note: `<strong>فيريلينك لا يستضيف أي برامج.</strong> هو دليل روابط صادرة إلى الموقع الرسمي لكل جهة. النسخ المجانية والتجريبية وشروط اللعب المجاني تحددها الجهات المطوّرة وقد تتغير — تحقق دائمًا من الشروط الحالية على صفحتها.`,
+    modal_login: "تسجيل الدخول",
+    modal_signup: "إنشاء حساب",
+    google_btn: "المتابعة عبر Google",
+    divider_or: "أو",
+    field_name: "الاسم",
+    field_name_ph: "اسمك",
+    field_email: "البريد الإلكتروني",
+    field_password: "كلمة المرور",
+    btn_continue: "متابعة",
+    modal_foot: "مؤمّن عبر Firebase Authentication.",
+    verified_label: "مصدر رسمي موثّق",
+    get_btn: "الذهاب إلى الموقع الرسمي ↗",
+    count_line: (n) => `${n} تطبيق · روابط مباشرة للمصادر الرسمية`,
+  },
+};
+
+const catTranslations = {
+  "Video & Photo":      { en: "Video & Photo",      fr: "Vidéo et photo",        ar: "فيديو وصور" },
+  "Design":              { en: "Design",              fr: "Design",                ar: "تصميم" },
+  "Games":                { en: "Games",               fr: "Jeux",                  ar: "ألعاب" },
+  "Productivity":         { en: "Productivity",        fr: "Productivité",          ar: "إنتاجية" },
+  "Music & Audio":        { en: "Music & Audio",       fr: "Musique et audio",      ar: "موسيقى وصوت" },
+  "Utilities":            { en: "Utilities",           fr: "Utilitaires",           ar: "أدوات مساعدة" },
+  "AI Assistants":        { en: "AI Assistants",       fr: "Assistants IA",         ar: "مساعدو الذكاء الاصطناعي" },
+  "Social & Messaging":   { en: "Social & Messaging",  fr: "Réseaux et messagerie", ar: "التواصل والمراسلة" },
+};
+const allLabel = { en: "All", fr: "Tous", ar: "الكل" };
+
+/* =========================================================================
+   APPS — name/domain/url are canonical; tier & desc are per-language
+   ========================================================================= */
+const apps = [
+  { name:"CapCut", cat:"Video & Photo", domain:"capcut.com", url:"https://www.capcut.com",
+    tier:{en:"Free (core features)", fr:"Gratuit (fonctions de base)", ar:"مجاني (الميزات الأساسية)"},
+    desc:{en:"Cross-platform video editor with templates, captions, and effects. Free tier covers most creator needs.",
+          fr:"Éditeur vidéo multiplateforme avec modèles, sous-titres et effets. La version gratuite couvre l'essentiel des besoins des créateurs.",
+          ar:"محرر فيديو متعدد المنصات يتضمن قوالب وترجمات وتأثيرات. النسخة المجانية تغطي معظم احتياجات صانعي المحتوى."} },
+  { name:"DaVinci Resolve", cat:"Video & Photo", domain:"blackmagicdesign.com", url:"https://www.blackmagicdesign.com/products/davinciresolve",
+    tier:{en:"Free edition", fr:"Édition gratuite", ar:"نسخة مجانية"},
+    desc:{en:"Hollywood-grade color grading and editing. The free edition is fully functional, no watermark.",
+          fr:"Étalonnage et montage de qualité professionnelle. La version gratuite est pleinement fonctionnelle, sans filigrane.",
+          ar:"تصحيح ألوان ومونتاج بجودة احترافية. النسخة المجانية كاملة الوظائف وبدون علامة مائية."} },
+  { name:"Adobe Premiere Pro", cat:"Video & Photo", domain:"adobe.com", url:"https://www.adobe.com/products/premiere.html",
+    tier:{en:"7-day free trial", fr:"Essai gratuit de 7 jours", ar:"تجربة مجانية لمدة 7 أيام"},
+    desc:{en:"Industry-standard timeline editor. Full trial access to every feature for a week.",
+          fr:"Logiciel de montage de référence dans l'industrie. Accès complet à toutes les fonctionnalités pendant une semaine.",
+          ar:"برنامج مونتاج معياري في الصناعة. وصول كامل لجميع الميزات لمدة أسبوع."} },
+  { name:"Adobe Photoshop", cat:"Design", domain:"adobe.com", url:"https://www.adobe.com/products/photoshop.html",
+    tier:{en:"7-day free trial", fr:"Essai gratuit de 7 jours", ar:"تجربة مجانية لمدة 7 أيام"},
+    desc:{en:"The reference image editor. Trial unlocks the complete toolset, no limitations.",
+          fr:"L'éditeur d'images de référence. L'essai débloque tous les outils, sans limitation.",
+          ar:"محرر الصور المرجعي. التجربة تفتح جميع الأدوات دون قيود."} },
+  { name:"GIMP", cat:"Design", domain:"gimp.org", url:"https://www.gimp.org",
+    tier:{en:"Free & open source", fr:"Gratuit et open source", ar:"مجاني ومفتوح المصدر"},
+    desc:{en:"Permanently free raster editor. A genuine Photoshop alternative with no trial clock.",
+          fr:"Éditeur matriciel gratuit en permanence. Une véritable alternative à Photoshop, sans limite de temps.",
+          ar:"محرر صور نقطي مجاني دائمًا. بديل حقيقي لفوتوشوب بدون فترة تجريبية محدودة."} },
+  { name:"Figma", cat:"Design", domain:"figma.com", url:"https://www.figma.com",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"Collaborative interface design tool. Free plan covers unlimited personal files.",
+          fr:"Outil de conception d'interfaces collaboratif. Le plan gratuit couvre des fichiers personnels illimités.",
+          ar:"أداة تصميم واجهات تعاونية. الخطة المجانية تتيح عددًا غير محدود من الملفات الشخصية."} },
+  { name:"Canva", cat:"Design", domain:"canva.com", url:"https://www.canva.com",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"Drag-and-drop design for social posts, thumbnails, and print. Generous free plan.",
+          fr:"Conception glisser-déposer pour publications, miniatures et supports imprimés. Plan gratuit généreux.",
+          ar:"تصميم بالسحب والإفلات لمنشورات التواصل والصور المصغرة والطباعة. خطة مجانية سخية."} },
+  { name:"Blender", cat:"Design", domain:"blender.org", url:"https://www.blender.org",
+    tier:{en:"Free & open source", fr:"Gratuit et open source", ar:"مجاني ومفتوح المصدر"},
+    desc:{en:"Full 3D suite — modeling, animation, rendering, VFX. No paid tier at all.",
+          fr:"Suite 3D complète — modélisation, animation, rendu, effets visuels. Entièrement gratuit, sans version payante.",
+          ar:"مجموعة أدوات ثلاثية الأبعاد كاملة — نمذجة، تحريك، رندر، مؤثرات بصرية. لا توجد نسخة مدفوعة على الإطلاق."} },
+  { name:"Fortnite", cat:"Games", domain:"epicgames.com", url:"https://www.epicgames.com/fortnite",
+    tier:{en:"Free to play", fr:"Gratuit", ar:"مجاني للعب"},
+    desc:{en:"Battle royale and creative modes, entirely free to play.",
+          fr:"Modes battle royale et créatif, entièrement gratuits.",
+          ar:"أوضاع باتل رويال والإبداع، مجانية بالكامل."} },
+  { name:"Valorant", cat:"Games", domain:"playvalorant.com", url:"https://playvalorant.com",
+    tier:{en:"Free to play", fr:"Gratuit", ar:"مجاني للعب"},
+    desc:{en:"Riot's tactical hero shooter. Free client, cosmetics are optional purchases.",
+          fr:"Jeu de tir tactique à héros signé Riot. Client gratuit, les cosmétiques sont des achats optionnels.",
+          ar:"لعبة تصويب تكتيكية بالأبطال من رايوت. العميل مجاني، والمقتنيات التجميلية اختيارية."} },
+  { name:"Genshin Impact", cat:"Games", domain:"genshin.hoyoverse.com", url:"https://genshin.hoyoverse.com",
+    tier:{en:"Free to play", fr:"Gratuit", ar:"مجاني للعب"},
+    desc:{en:"Open-world action RPG with a free base game and gacha economy.",
+          fr:"RPG d'action en monde ouvert avec un jeu de base gratuit et une économie de type gacha.",
+          ar:"لعبة تقمص أدوار بعالم مفتوح، أساسها مجاني ويعتمد اقتصاد \"غاتشا\"."} },
+  { name:"League of Legends", cat:"Games", domain:"leagueoflegends.com", url:"https://www.leagueoflegends.com",
+    tier:{en:"Free to play", fr:"Gratuit", ar:"مجاني للعب"},
+    desc:{en:"The long-running MOBA. Every champion is earnable without paying.",
+          fr:"Le MOBA de longue date. Chaque champion peut être obtenu sans payer.",
+          ar:"لعبة موبا الشهيرة طويلة الأمد. يمكن الحصول على كل الأبطال دون دفع."} },
+  { name:"itch.io", cat:"Games", domain:"itch.io", url:"https://itch.io/games/free",
+    tier:{en:"Many free titles", fr:"Nombreux titres gratuits", ar:"العديد من الألعاب المجانية"},
+    desc:{en:"Indie game marketplace with a huge, curated free-games section.",
+          fr:"Marketplace de jeux indépendants avec une large sélection de jeux gratuits.",
+          ar:"سوق للألعاب المستقلة يضم قسمًا كبيرًا ومنسقًا من الألعاب المجانية."} },
+  { name:"Steam", cat:"Games", domain:"store.steampowered.com", url:"https://store.steampowered.com/genre/Free%20to%20Play/",
+    tier:{en:"Free-to-play hub", fr:"Espace jeux gratuits", ar:"قسم الألعاب المجانية"},
+    desc:{en:"Valve's storefront filtered to free-to-play titles across every genre.",
+          fr:"Boutique de Valve filtrée sur les titres gratuits, tous genres confondus.",
+          ar:"متجر Valve مُصفّى لعرض الألعاب المجانية من جميع الأنواع."} },
+  { name:"Minecraft", cat:"Games", domain:"minecraft.net", url:"https://www.minecraft.net/en-us/trial",
+    tier:{en:"Free trial (official)", fr:"Essai gratuit (officiel)", ar:"تجربة مجانية (رسمية)"},
+    desc:{en:"Mojang's official trial lets you play Java & Bedrock Edition for a limited time before buying.",
+          fr:"L'essai officiel de Mojang permet de jouer aux éditions Java et Bedrock pendant une durée limitée avant l'achat.",
+          ar:"تتيح لك التجربة الرسمية من Mojang لعب نسختي Java وBedrock لفترة محدودة قبل الشراء."} },
+  { name:"Grand Theft Auto V", cat:"Games", domain:"rockstargames.com", url:"https://www.rockstargames.com/gta-v",
+    tier:{en:"Paid — no free version", fr:"Payant — aucune version gratuite", ar:"مدفوع — لا توجد نسخة مجانية"},
+    desc:{en:"Rockstar's open-world action game. Not free or trial-based — this links to the official store page, not a free copy.",
+          fr:"Le jeu d'action en monde ouvert de Rockstar. Ni gratuit ni disponible en essai — ce lien mène à la page officielle du magasin, pas à une copie gratuite.",
+          ar:"لعبة الأكشن بعالم مفتوح من Rockstar. ليست مجانية ولا تتوفر بنسخة تجريبية — هذا الرابط يوصلك إلى صفحة المتجر الرسمية وليس نسخة مجانية."} },
+  { name:"Roblox", cat:"Games", domain:"roblox.com", url:"https://www.roblox.com",
+    tier:{en:"Free to play", fr:"Gratuit", ar:"مجاني للعب"},
+    desc:{en:"User-generated game platform. Free to download and play, with optional in-game purchases.",
+          fr:"Plateforme de jeux créés par les utilisateurs. Gratuite à télécharger et à jouer, avec des achats intégrés optionnels.",
+          ar:"منصة ألعاب من إنشاء المستخدمين. التحميل واللعب مجانيان، مع مشتريات اختيارية داخل اللعبة."} },
+  { name:"Notion", cat:"Productivity", domain:"notion.so", url:"https://www.notion.so",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"Docs, wikis, and lightweight databases in one workspace. Free for individuals.",
+          fr:"Documents, wikis et bases de données légères dans un seul espace de travail. Gratuit pour un usage individuel.",
+          ar:"مستندات وويكي وقواعد بيانات خفيفة في مساحة عمل واحدة. مجانية للاستخدام الفردي."} },
+  { name:"Trello", cat:"Productivity", domain:"trello.com", url:"https://trello.com",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"Kanban-style task boards. Free plan is enough for most personal projects.",
+          fr:"Tableaux de tâches façon Kanban. Le plan gratuit suffit pour la plupart des projets personnels.",
+          ar:"لوحات مهام على طراز كانبان. الخطة المجانية كافية لمعظم المشاريع الشخصية."} },
+  { name:"Microsoft 365", cat:"Productivity", domain:"microsoft.com", url:"https://www.microsoft.com/microsoft-365/try",
+    tier:{en:"1-month free trial", fr:"Essai gratuit d'un mois", ar:"تجربة مجانية لمدة شهر"},
+    desc:{en:"Word, Excel, PowerPoint and more, cloud-connected. Trial covers the full suite.",
+          fr:"Word, Excel, PowerPoint et plus, connectés au cloud. L'essai couvre l'ensemble de la suite.",
+          ar:"Word وExcel وPowerPoint وغيرها، متصلة بالسحابة. التجربة تشمل الحزمة كاملة."} },
+  { name:"Slack", cat:"Productivity", domain:"slack.com", url:"https://slack.com",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"Team messaging with channels and integrations. Free plan supports small teams.",
+          fr:"Messagerie d'équipe avec canaux et intégrations. Le plan gratuit convient aux petites équipes.",
+          ar:"مراسلة جماعية مع قنوات وتكاملات. الخطة المجانية تناسب الفرق الصغيرة."} },
+  { name:"Audacity", cat:"Music & Audio", domain:"audacityteam.org", url:"https://www.audacityteam.org",
+    tier:{en:"Free & open source", fr:"Gratuit et open source", ar:"مجاني ومفتوح المصدر"},
+    desc:{en:"Multi-track audio recorder and editor, no cost, no trial period.",
+          fr:"Enregistreur et éditeur audio multipiste, sans frais ni période d'essai.",
+          ar:"مسجل ومحرر صوت متعدد المسارات، مجاني تمامًا وبدون فترة تجريبية."} },
+  { name:"FL Studio", cat:"Music & Audio", domain:"image-line.com", url:"https://www.image-line.com/fl-studio-trial/",
+    tier:{en:"Free trial (unlimited time)", fr:"Essai gratuit (durée illimitée)", ar:"تجربة مجانية (بلا حد زمني)"},
+    desc:{en:"DAW for beat-making and production. Trial never expires, but saving is disabled.",
+          fr:"Station de production musicale pour la création de beats. L'essai n'expire jamais, mais la sauvegarde est désactivée.",
+          ar:"برنامج لإنتاج الموسيقى وصناعة الإيقاعات. التجربة لا تنتهي أبدًا، لكن الحفظ معطّل فيها."} },
+  { name:"Spotify", cat:"Music & Audio", domain:"spotify.com", url:"https://www.spotify.com",
+    tier:{en:"Free, ad-supported", fr:"Gratuit, avec publicités", ar:"مجاني، مدعوم بالإعلانات"},
+    desc:{en:"Music and podcast streaming. Free tier is fully playable, with ads.",
+          fr:"Streaming de musique et de podcasts. La version gratuite est entièrement jouable, avec publicités.",
+          ar:"بث للموسيقى والبودكاست. النسخة المجانية قابلة للتشغيل الكامل، مع إعلانات."} },
+  { name:"VLC Media Player", cat:"Utilities", domain:"videolan.org", url:"https://www.videolan.org/vlc/",
+    tier:{en:"Free & open source", fr:"Gratuit et open source", ar:"مجاني ومفتوح المصدر"},
+    desc:{en:"Plays virtually any video or audio format. Completely free, no bundled extras.",
+          fr:"Lit pratiquement tous les formats vidéo et audio. Entièrement gratuit, sans extras superflus.",
+          ar:"يشغّل تقريبًا أي صيغة فيديو أو صوت. مجاني بالكامل وبدون إضافات غير مرغوبة."} },
+  { name:"7-Zip", cat:"Utilities", domain:"7-zip.org", url:"https://www.7-zip.org",
+    tier:{en:"Free & open source", fr:"Gratuit et open source", ar:"مجاني ومفتوح المصدر"},
+    desc:{en:"File archiver with a high compression ratio. Genuinely free, always.",
+          fr:"Archiveur de fichiers à taux de compression élevé. Vraiment gratuit, sans exception.",
+          ar:"أداة ضغط ملفات بنسبة ضغط عالية. مجانية فعليًا وبشكل دائم."} },
+  { name:"Discord", cat:"Utilities", domain:"discord.com", url:"https://discord.com",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"Voice, video and text chat for communities. Core app is free.",
+          fr:"Discussion vocale, vidéo et texte pour les communautés. L'application principale est gratuite.",
+          ar:"دردشة صوتية ومرئية ونصية للمجتمعات. التطبيق الأساسي مجاني."} },
+  { name:"Claude", cat:"AI Assistants", domain:"claude.ai", url:"https://claude.ai",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"Anthropic's AI assistant for writing, coding, and research. Free plan needs no payment info.",
+          fr:"L'assistant IA d'Anthropic pour l'écriture, le code et la recherche. Le plan gratuit ne nécessite aucune information de paiement.",
+          ar:"مساعد الذكاء الاصطناعي من Anthropic للكتابة والبرمجة والبحث. الخطة المجانية لا تتطلب معلومات دفع."} },
+  { name:"Gemini", cat:"AI Assistants", domain:"gemini.google.com", url:"https://gemini.google.com",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"Google's AI assistant, built into Search, Docs, and Android. Core features are free.",
+          fr:"L'assistant IA de Google, intégré à la Recherche, Docs et Android. Les fonctionnalités principales sont gratuites.",
+          ar:"مساعد الذكاء الاصطناعي من Google، مدمج في البحث ومستندات Google وأندرويد. الميزات الأساسية مجانية."} },
+  { name:"ChatGPT", cat:"AI Assistants", domain:"chatgpt.com", url:"https://chatgpt.com",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"OpenAI's conversational assistant. Free access to the base model, no card required.",
+          fr:"L'assistant conversationnel d'OpenAI. Accès gratuit au modèle de base, sans carte bancaire requise.",
+          ar:"مساعد المحادثة من OpenAI. وصول مجاني للنموذج الأساسي دون الحاجة لبطاقة دفع."} },
+  { name:"WhatsApp", cat:"Social & Messaging", domain:"whatsapp.com", url:"https://www.whatsapp.com",
+    tier:{en:"Free", fr:"Gratuit", ar:"مجاني"},
+    desc:{en:"Encrypted messaging and calls. Fully free across mobile and desktop.",
+          fr:"Messagerie et appels chiffrés. Entièrement gratuit sur mobile et ordinateur.",
+          ar:"مراسلة ومكالمات مشفّرة. مجاني بالكامل على الهاتف والحاسوب."} },
+  { name:"Zoom", cat:"Social & Messaging", domain:"zoom.us", url:"https://zoom.us",
+    tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
+    desc:{en:"Video calls and webinars. Free plan covers 1-to-1 calls and 40-minute group meetings.",
+          fr:"Appels vidéo et webinaires. Le plan gratuit couvre les appels individuels et les réunions de groupe de 40 minutes.",
+          ar:"مكالمات فيديو وندوات عبر الإنترنت. الخطة المجانية تشمل المكالمات الفردية واجتماعات جماعية لمدة 40 دقيقة."} },
+  { name:"TikTok", cat:"Social & Messaging", domain:"tiktok.com", url:"https://www.tiktok.com",
+    tier:{en:"Free", fr:"Gratuit", ar:"مجاني"},
+    desc:{en:"Short-form video app. Free to use, with in-app purchases for gifting only.",
+          fr:"Application de vidéos courtes. Gratuite à utiliser, avec des achats intégrés uniquement pour les cadeaux.",
+          ar:"تطبيق فيديوهات قصيرة. الاستخدام مجاني، مع مشتريات داخل التطبيق مخصصة للهدايا فقط."} },
+];
+
+const categories = ["All", ...Array.from(new Set(apps.map(a => a.cat)))];
+let activeCat = "All";
+let query = "";
+let currentLang = localStorage.getItem("verilink_lang") || "en";
+
+function selectCategoryAndScroll(cat){
+  activeCat = cat;
+  query = "";
+  document.getElementById("searchInput").value = "";
+  renderChips();
+  renderGrid();
+  document.getElementById("directory").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function initials(name){
+  return name.split(" ").slice(0,2).map(w => w[0]).join("").toUpperCase();
+}
+function iconColor(name){
+  const palette = ["#34D399","#38BDF8","#FBBF24","#F472B6","#A78BFA","#4ADE80"];
+  let sum = 0; for (const c of name) sum += c.charCodeAt(0);
+  return palette[sum % palette.length];
+}
+
+function renderChips(){
+  const row = document.getElementById("chipRow");
+  row.innerHTML = "";
+  categories.forEach(cat => {
+    const chip = document.createElement("button");
+    chip.className = "chip" + (cat === activeCat ? " active" : "");
+    chip.textContent = cat === "All" ? allLabel[currentLang] : (catTranslations[cat] ? catTranslations[cat][currentLang] : cat);
+    chip.onclick = () => { activeCat = cat; renderChips(); renderGrid(); };
+    row.appendChild(chip);
+  });
+}
+
+function renderGrid(){
+  const t = translations[currentLang];
+  const grid = document.getElementById("grid");
+  const empty = document.getElementById("emptyState");
+  const count = document.getElementById("countLine");
+  const q = query.trim().toLowerCase();
+
+  const filtered = apps.filter(a => {
+    const matchesCat = activeCat === "All" || a.cat === activeCat;
+    const matchesQuery = !q || a.name.toLowerCase().includes(q) || a.desc.en.toLowerCase().includes(q);
+    return matchesCat && matchesQuery;
+  });
+
+  count.textContent = t.count_line(filtered.length);
+  grid.innerHTML = "";
+  empty.style.display = filtered.length ? "none" : "block";
+
+  filtered.forEach((a, i) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    const bg = iconColor(a.name);
+    const catLabel = catTranslations[a.cat] ? catTranslations[a.cat][currentLang] : a.cat;
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="app-icon" style="background:${bg}">
+          <img src="https://logo.clearbit.com/${a.domain}?size=88" alt="${a.name} logo"
+               onerror="this.parentElement.classList.add('fallback'); this.remove(); this.parentElement.textContent='${initials(a.name)}';">
+        </div>
+        <span class="cat-tag">${catLabel}</span>
+      </div>
+      <div>
+        <p class="app-name">${a.name}</p>
+        <p class="app-tier">${a.tier[currentLang]}</p>
+      </div>
+      <p class="app-desc">${a.desc[currentLang]}</p>
+      <div class="verify-row"><span class="vdot"></span>${t.verified_label} · <span class="domain">${a.domain}</span></div>
+      <a class="get-btn" href="${a.url}" target="_blank" rel="noopener noreferrer">${t.get_btn}</a>
+    `;
+    grid.appendChild(card);
+
+    // in-grid ad slot every 8 cards
+    if ((i + 1) % 8 === 0) {
+      const ad = document.createElement("div");
+      ad.className = "ad-card ad-slot";
+      ad.textContent = `${t.ad_grid} ad-grid-${Math.floor(i / 8)}`;
+      grid.appendChild(ad);
+    }
+  });
+}
+
+document.getElementById("searchInput").addEventListener("input", (e) => {
+  query = e.target.value;
+  renderGrid();
+});
+
+/* =========================================================================
+   LANGUAGE SWITCHING
+   ========================================================================= */
+function applyStaticTranslations(){
+  const t = translations[currentLang];
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach(el => {
+    const key = el.getAttribute("data-i18n-html");
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (t[key] !== undefined) el.setAttribute("placeholder", t[key]);
+  });
+  document.getElementById("langBtnLabel").textContent = currentLang.toUpperCase();
+  document.querySelectorAll(".lang-option").forEach(opt => {
+    opt.classList.toggle("active", opt.getAttribute("data-lang") === currentLang);
+  });
+}
+
+function setLang(lang){
+  currentLang = lang;
+  localStorage.setItem("verilink_lang", lang);
+  document.documentElement.setAttribute("lang", lang);
+  document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+  applyStaticTranslations();
+  renderChips();
+  renderGrid();
+  toggleLangMenu(false);
+}
+
+function toggleLangMenu(force){
+  const menu = document.getElementById("langMenu");
+  const btn = document.getElementById("langBtn");
+  const shouldOpen = typeof force === "boolean" ? force : !menu.classList.contains("open");
+  menu.classList.toggle("open", shouldOpen);
+  btn.classList.toggle("open", shouldOpen);
+}
+document.addEventListener("click", (e) => {
+  const switcher = document.querySelector(".lang-switch");
+  if (switcher && !switcher.contains(e.target)) toggleLangMenu(false);
+});
+
+// init language on load
+document.documentElement.setAttribute("lang", currentLang);
+document.documentElement.setAttribute("dir", currentLang === "ar" ? "rtl" : "ltr");
+applyStaticTranslations();
+
+renderChips();
+renderGrid();
+
+// If arriving with a category or search chosen via URL params, apply it and jump to the directory
+(function applyIncomingParams(){
+  const params = new URLSearchParams(window.location.search);
+  const incomingCat = params.get("cat");
+  const incomingQuery = params.get("q");
+  let shouldJump = false;
+
+  if (incomingCat && categories.includes(incomingCat)) {
+    activeCat = incomingCat;
+    shouldJump = true;
+  }
+  if (incomingQuery) {
+    query = incomingQuery;
+    document.getElementById("searchInput").value = incomingQuery;
+    shouldJump = true;
+  }
+  if (shouldJump) {
+    renderChips();
+    renderGrid();
+    window.addEventListener("load", () => {
+      document.getElementById("directory").scrollIntoView({ behavior: "auto", block: "start" });
+    });
+  }
+})();
+
+/* ---- terminal signature animation — fixed box, lines cap out then reset ---- */
+const termBody = document.getElementById("termBody");
+const scamHosts = ["premiere-pro-free-download.ru", "getcapcut-crack.net", "top-games-hub.cc"];
+const okHosts = ["adobe.com/products/premiere", "capcut.com", "store.steampowered.com"];
+const MAX_LINES = 8;
+
+function addLine(text, cls){
+  const line = document.createElement("div");
+  if (cls) line.className = cls;
+  line.textContent = text;
+  termBody.appendChild(line);
+  while (termBody.children.length > MAX_LINES) {
+    termBody.removeChild(termBody.firstChild);
+  }
+}
+function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+async function runTerminal(){
+  termBody.innerHTML = "";
+  for (let i=0; i<scamHosts.length; i++){
+    addLine(`$ resolve ${scamHosts[i]}`);
+    await wait(260);
+    addLine(`✕ untrusted source — blocked`, "line-reject");
+    await wait(340);
+  }
+  addLine(`$ switching to verified index…`);
+  await wait(360);
+  for (let i=0; i<okHosts.length; i++){
+    addLine(`✓ ${okHosts[i]}`, "line-ok");
+    await wait(300);
+  }
+  const cursor = document.createElement("div");
+  cursor.innerHTML = `<span class="prompt">$</span> <span class="blinker"></span>`;
+  termBody.appendChild(cursor);
+}
+runTerminal();
+setInterval(runTerminal, 10000);
+
+/* ---- auth modal, wired to Firebase (see config block in <head>) ---- */
+let authMode = "login";
+
+function openAuth(mode){
+  document.getElementById("authOverlay").classList.add("open");
+  document.getElementById("authError").style.display = "none";
+  switchTab(mode);
+}
+function closeAuth(){
+  document.getElementById("authOverlay").classList.remove("open");
+}
+function switchTab(mode){
+  authMode = mode;
+  const t = translations[currentLang];
+  const isLogin = mode === "login";
+  document.getElementById("tabLogin").classList.toggle("active", isLogin);
+  document.getElementById("tabSignup").classList.toggle("active", !isLogin);
+  document.getElementById("modalTitle").textContent = isLogin ? t.modal_login : t.modal_signup;
+  document.getElementById("signupNameField").style.display = isLogin ? "none" : "block";
+  document.getElementById("authError").style.display = "none";
+}
+
+function showAuthError(msg){
+  const el = document.getElementById("authError");
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+function firebaseReady(){
+  if (!window.__auth) {
+    showAuthError("Auth isn't configured yet — add your Firebase project keys in the <head> of index.html.");
+    return false;
+  }
+  return true;
+}
+
+async function submitAuth(){
+  if (!firebaseReady()) return;
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+  const name = document.getElementById("authName").value.trim();
+  const btn = document.getElementById("authSubmitBtn");
+  document.getElementById("authError").style.display = "none";
+
+  if (!email || !password) { showAuthError("Enter an email and password."); return; }
+
+  btn.disabled = true;
+  try {
+    const { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } = window.__fb;
+    if (authMode === "signup") {
+      const cred = await createUserWithEmailAndPassword(window.__auth, email, password);
+      if (name) await updateProfile(cred.user, { displayName: name });
+    } else {
+      await signInWithEmailAndPassword(window.__auth, email, password);
+    }
+    closeAuth();
+    showToast(translations[currentLang].toast_auth_success || "You're signed in.");
+  } catch (err) {
+    showAuthError(friendlyAuthError(err));
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function submitGoogle(){
+  if (!firebaseReady()) return;
+  try {
+    const { signInWithPopup } = window.__fb;
+    await signInWithPopup(window.__auth, window.__googleProvider);
+    closeAuth();
+    showToast(translations[currentLang].toast_auth_success || "You're signed in.");
+  } catch (err) {
+    showAuthError(friendlyAuthError(err));
+  }
+}
+
+function friendlyAuthError(err){
+  const code = (err && err.code) || "";
+  if (code.includes("email-already-in-use")) return "That email already has an account — try logging in instead.";
+  if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found")) return "Email or password is incorrect.";
+  if (code.includes("weak-password")) return "Password should be at least 6 characters.";
+  if (code.includes("invalid-email")) return "That email address doesn't look right.";
+  if (code.includes("popup-closed-by-user")) return "Google sign-in was closed before finishing.";
+  return "Something went wrong — please try again.";
+}
+
+async function doSignOut(){
+  if (!window.__auth) return;
+  await window.__fb.signOut(window.__auth);
+  showToast("Signed out.");
+}
+
+window.addEventListener("verilink-auth-changed", (e) => {
+  const user = e.detail.user;
+  const authedBar = document.getElementById("authedBar");
+  const guestBar = document.getElementById("guestBar");
+  if (user) {
+    authedBar.style.display = "flex";
+    guestBar.style.display = "none";
+    document.getElementById("authedEmail").textContent = user.displayName || user.email;
+  } else {
+    authedBar.style.display = "none";
+    guestBar.style.display = "flex";
+  }
+});
+
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2600);
+}
+</script>
+
+</body>
+</html>
