@@ -720,7 +720,7 @@ const translations = {
     support_response_label: "response time:",
     support_not_active: "— not yet active —",
     support_note: "Placeholder address — swap this for your real support inbox before launch.",
-    footer_note: `<strong>Verilink hosts no software.</strong> It's a directory of outbound links to each vendor's official site. Free tiers, trials, and free-to-play terms are set by the vendors and can change — always confirm current terms on their page.`,
+    footer_note: `<strong>Verilink hosts no software.</strong> It's a directory of outbound links to each vendor's official site. Free tiers, trials, and free-to-play terms are set by the vendors and can change — always confirm current terms on their page. Some links may be affiliate links, meaning Verilink could earn a commission if you sign up — this never changes the price you pay.`,
     modal_login: "Log in",
     modal_signup: "Sign up",
     google_btn: "Continue with Google",
@@ -762,7 +762,7 @@ const translations = {
     support_response_label: "délai de réponse :",
     support_not_active: "— pas encore actif —",
     support_note: "Adresse provisoire — à remplacer par votre véritable boîte d'assistance avant le lancement.",
-    footer_note: `<strong>Verilink n'héberge aucun logiciel.</strong> C'est un répertoire de liens sortants vers le site officiel de chaque éditeur. Les offres gratuites, essais et conditions free-to-play sont définis par les éditeurs et peuvent changer — vérifiez toujours les conditions actuelles sur leur page.`,
+    footer_note: `<strong>Verilink n'héberge aucun logiciel.</strong> C'est un répertoire de liens sortants vers le site officiel de chaque éditeur. Les offres gratuites, essais et conditions free-to-play sont définis par les éditeurs et peuvent changer — vérifiez toujours les conditions actuelles sur leur page. Certains liens peuvent être des liens d'affiliation : Verilink peut toucher une commission si vous vous inscrivez, sans que cela change le prix que vous payez.`,
     modal_login: "Connexion",
     modal_signup: "S'inscrire",
     google_btn: "Continuer avec Google",
@@ -804,7 +804,7 @@ const translations = {
     support_response_label: "زمن الرد:",
     support_not_active: "— غير مُفعّل بعد —",
     support_note: "عنوان مؤقت — استبدله ببريد الدعم الحقيقي الخاص بك قبل الإطلاق.",
-    footer_note: `<strong>فيريلينك لا يستضيف أي برامج.</strong> هو دليل روابط صادرة إلى الموقع الرسمي لكل جهة. النسخ المجانية والتجريبية وشروط اللعب المجاني تحددها الجهات المطوّرة وقد تتغير — تحقق دائمًا من الشروط الحالية على صفحتها.`,
+    footer_note: `<strong>فيريلينك لا يستضيف أي برامج.</strong> هو دليل روابط صادرة إلى الموقع الرسمي لكل جهة. النسخ المجانية والتجريبية وشروط اللعب المجاني تحددها الجهات المطوّرة وقد تتغير — تحقق دائمًا من الشروط الحالية على صفحتها. قد تكون بعض الروابط روابط إحالة تجارية، بحيث قد يحصل فيريلينك على عمولة إذا اشتركت، دون أن يغيّر ذلك السعر الذي تدفعه.`,
     modal_login: "تسجيل الدخول",
     modal_signup: "إنشاء حساب",
     google_btn: "المتابعة عبر Google",
@@ -847,12 +847,12 @@ const apps = [
     desc:{en:"Hollywood-grade color grading and editing. The free edition is fully functional, no watermark.",
           fr:"Étalonnage et montage de qualité professionnelle. La version gratuite est pleinement fonctionnelle, sans filigrane.",
           ar:"تصحيح ألوان ومونتاج بجودة احترافية. النسخة المجانية كاملة الوظائف وبدون علامة مائية."} },
-  { name:"Adobe Premiere Pro", cat:"Video & Photo", domain:"adobe.com", url:"https://www.adobe.com/products/premiere.html",
+  { name:"Adobe Premiere Pro", cat:"Video & Photo", domain:"adobe.com", url:"https://www.adobe.com/products/premiere.html", affiliateUrl:null,
     tier:{en:"7-day free trial", fr:"Essai gratuit de 7 jours", ar:"تجربة مجانية لمدة 7 أيام"},
     desc:{en:"Industry-standard timeline editor. Full trial access to every feature for a week.",
           fr:"Logiciel de montage de référence dans l'industrie. Accès complet à toutes les fonctionnalités pendant une semaine.",
           ar:"برنامج مونتاج معياري في الصناعة. وصول كامل لجميع الميزات لمدة أسبوع."} },
-  { name:"Adobe Photoshop", cat:"Design", domain:"adobe.com", url:"https://www.adobe.com/products/photoshop.html",
+  { name:"Adobe Photoshop", cat:"Design", domain:"adobe.com", url:"https://www.adobe.com/products/photoshop.html", affiliateUrl:null,
     tier:{en:"7-day free trial", fr:"Essai gratuit de 7 jours", ar:"تجربة مجانية لمدة 7 أيام"},
     desc:{en:"The reference image editor. Trial unlocks the complete toolset, no limitations.",
           fr:"L'éditeur d'images de référence. L'essai débloque tous les outils, sans limitation.",
@@ -932,7 +932,7 @@ const apps = [
     desc:{en:"Kanban-style task boards. Free plan is enough for most personal projects.",
           fr:"Tableaux de tâches façon Kanban. Le plan gratuit suffit pour la plupart des projets personnels.",
           ar:"لوحات مهام على طراز كانبان. الخطة المجانية كافية لمعظم المشاريع الشخصية."} },
-  { name:"Microsoft 365", cat:"Productivity", domain:"microsoft.com", url:"https://www.microsoft.com/microsoft-365/try",
+  { name:"Microsoft 365", cat:"Productivity", domain:"microsoft.com", url:"https://www.microsoft.com/microsoft-365/try", affiliateUrl:null,
     tier:{en:"1-month free trial", fr:"Essai gratuit d'un mois", ar:"تجربة مجانية لمدة شهر"},
     desc:{en:"Word, Excel, PowerPoint and more, cloud-connected. Trial covers the full suite.",
           fr:"Word, Excel, PowerPoint et plus, connectés au cloud. L'essai couvre l'ensemble de la suite.",
@@ -992,7 +992,7 @@ const apps = [
     desc:{en:"Encrypted messaging and calls. Fully free across mobile and desktop.",
           fr:"Messagerie et appels chiffrés. Entièrement gratuit sur mobile et ordinateur.",
           ar:"مراسلة ومكالمات مشفّرة. مجاني بالكامل على الهاتف والحاسوب."} },
-  { name:"Zoom", cat:"Social & Messaging", domain:"zoom.us", url:"https://zoom.us",
+  { name:"Zoom", cat:"Social & Messaging", domain:"zoom.us", url:"https://zoom.us", affiliateUrl:null,
     tier:{en:"Free tier", fr:"Offre gratuite", ar:"خطة مجانية"},
     desc:{en:"Video calls and webinars. Free plan covers 1-to-1 calls and 40-minute group meetings.",
           fr:"Appels vidéo et webinaires. Le plan gratuit couvre les appels individuels et les réunions de groupe de 40 minutes.",
@@ -1008,6 +1008,16 @@ const categories = ["All", ...Array.from(new Set(apps.map(a => a.cat)))];
 let activeCat = "All";
 let query = "";
 let currentLang = localStorage.getItem("verilink_lang") || "en";
+
+/* AFFILIATE LINKS — some apps above have an `affiliateUrl: null` field.
+   Once you're approved for a program (Adobe, Microsoft, etc.), replace
+   that `null` with your real tracking link, e.g.:
+   affiliateUrl: "https://partners.adobe.com/your-tracking-id"
+   The button automatically uses affiliateUrl when it's set, and falls
+   back to the plain official url otherwise — no other code changes needed. */
+function linkFor(app){
+  return app.affiliateUrl || app.url;
+}
 
 function selectCategoryAndScroll(cat){
   activeCat = cat;
@@ -1075,7 +1085,7 @@ function renderGrid(){
       </div>
       <p class="app-desc">${a.desc[currentLang]}</p>
       <div class="verify-row"><span class="vdot"></span>${t.verified_label} · <span class="domain">${a.domain}</span></div>
-      <a class="get-btn" href="${a.url}" target="_blank" rel="noopener noreferrer">${t.get_btn}</a>
+      <a class="get-btn" href="${linkFor(a)}" target="_blank" rel="noopener noreferrer">${t.get_btn}</a>
     `;
     grid.appendChild(card);
 
@@ -1269,6 +1279,7 @@ async function submitAuth(){
     closeAuth();
     showToast(translations[currentLang].toast_auth_success || "You're signed in.");
   } catch (err) {
+    console.error("Verilink auth error:", err);
     showAuthError(friendlyAuthError(err));
   } finally {
     btn.disabled = false;
@@ -1283,6 +1294,7 @@ async function submitGoogle(){
     closeAuth();
     showToast(translations[currentLang].toast_auth_success || "You're signed in.");
   } catch (err) {
+    console.error("Verilink Google auth error:", err);
     showAuthError(friendlyAuthError(err));
   }
 }
@@ -1294,7 +1306,13 @@ function friendlyAuthError(err){
   if (code.includes("weak-password")) return "Password should be at least 6 characters.";
   if (code.includes("invalid-email")) return "That email address doesn't look right.";
   if (code.includes("popup-closed-by-user")) return "Google sign-in was closed before finishing.";
-  return "Something went wrong — please try again.";
+  if (code.includes("unauthorized-domain")) return "This domain isn't authorized in Firebase yet — add it under Authentication → Settings → Authorized domains.";
+  if (code.includes("operation-not-allowed")) return "This sign-in method isn't enabled in Firebase — check Authentication → Sign-in method.";
+  if (code.includes("network-request-failed")) return "Network error reaching Firebase — check your connection and try again.";
+  if (code.includes("too-many-requests")) return "Too many attempts — wait a moment and try again.";
+  if (code.includes("api-key")) return "Firebase API key isn't valid for this project — double-check firebaseConfig.";
+  // Fallback: show the raw code so it's diagnosable instead of a dead end.
+  return code ? `Something went wrong (${code}) — please try again.` : "Something went wrong — please try again.";
 }
 
 async function doSignOut(){
