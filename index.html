@@ -16,29 +16,34 @@
 -->
 
 <!-- ============================================================
-     FIREBASE AUTH — replace the config below with your own project's
-     config from https://console.firebase.google.com
-     (Project settings → General → Your apps → SDK setup and config)
-     Also enable "Email/Password" and "Google" under
-     Authentication → Sign-in method in the Firebase console.
+     FIREBASE AUTH — connected to the "verilink0" Firebase project.
+     If you ever need to change project, replace firebaseConfig below
+     with a fresh one from https://console.firebase.google.com
+     (Project settings → General → Your apps → SDK setup and config).
+     Also make sure "Email/Password" and "Google" are enabled under
+     Authentication → Sign-in method.
      ============================================================ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-analytics.js";
   import {
     getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
     GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut,
     updateProfile
   } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
-  // TODO: paste your own Firebase project config here
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT",
-    appId: "YOUR_APP_ID",
+    apiKey: "AIzaSyAVrCiDfenFoPXr2pH2OS59vNZlQahJG8A",
+    authDomain: "verilink0.firebaseapp.com",
+    projectId: "verilink0",
+    storageBucket: "verilink0.firebasestorage.app",
+    messagingSenderId: "497234578405",
+    appId: "1:497234578405:web:a6c1288030291a4b6f7d0c",
+    measurementId: "G-7P2WJ0K4JH"
   };
 
   const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
   const auth = getAuth(app);
   window.__auth = auth;
   window.__googleProvider = new GoogleAuthProvider();
